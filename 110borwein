@@ -1,0 +1,76 @@
+#! /bin/python3
+# -*- coding: Utf-8 -*
+
+import sys
+import operator
+from functools import reduce
+from math import sin, pi
+
+def print_help():
+    return 0
+
+def function(x: float, n: int):
+    if x == 0:
+        return 1
+    return reduce(operator.mul, ((sin(x / ((2 * k) + 1)) / (x / ((2 * k) + 1))) for k in range(n + 1)))
+
+def midpoint_method(n: int, min_=0, max_=5000):
+    number_of_sub_interval = 10000
+    h = float(max_ - min_) / float(number_of_sub_interval)
+    area = lambda h, x1, x2: h * function((x1 + x2) / 2, n)
+    pairs = list()
+    x = float(min_)
+    while x < max_:
+        pairs.append((x, x + h))
+        x += h
+    return sum(area(h, x1, x2) for x1, x2 in pairs)
+
+def trapezoidal_method(n: int, min_=0, max_=5000):
+    number_of_sub_interval = 10000
+    h = float(max_ - min_) / float(number_of_sub_interval)
+    area = lambda h, x1, x2: (h * (function(x1, n) + function(x2, n))) / 2
+    pairs = list()
+    x = float(min_)
+    while x < max_:
+        pairs.append((x, x + h))
+        x += h
+    return sum(area(h, x1, x2) for x1, x2 in pairs)
+
+def simpson_method(n: int, min_=0, max_=5000):
+    number_of_sub_interval = 10000
+    h = float(max_ - min_) / float(number_of_sub_interval)
+    x = lambda i: float(min_) + (float(i) * h)
+    even_sum = odd_sum = 0
+    for i in range(1, number_of_sub_interval, 2):
+        odd_sum += 4 * function(x(i), n)
+    for i in range(2, number_of_sub_interval, 2):
+        even_sum += 2 * function(x(i), n)
+    return (h * (function(x(0), n) + even_sum + odd_sum + function(x(number_of_sub_interval), n))) / 3
+
+def main(argc: int, argv: list):
+    if argc != 2:
+        return 84
+    if argv[1] == "-h":
+        return print_help()
+    if not argv[1].isdigit():
+        return 84
+    n = int(argv[1])
+    demi_pi = float(pi / 2.0)
+    integrals_calculation_methods = [
+        ("Midpoint", midpoint_method),
+        ("Trapezoidal", trapezoidal_method),
+        ("Simpson", simpson_method)
+    ]
+    for i, method in enumerate(integrals_calculation_methods):
+        name, integral = method
+        value = integral(n)
+        diff = abs(value - demi_pi)
+        print(f"{name}:")
+        print(f"I{n}: {value:.10f}")
+        print(f"diff: {diff:.10f}")
+        if i + 1 != len(integrals_calculation_methods):
+            print()
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main(len(sys.argv), sys.argv.copy()))
