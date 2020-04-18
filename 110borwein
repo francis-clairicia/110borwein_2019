@@ -66,8 +66,8 @@ def main(argc: int, argv: list):
         value = integral(n)
         diff = abs(value - demi_pi)
         print(f"{name}:")
-        print(f"I{n}: {value:.10f}")
-        print(f"diff: {diff:.10f}")
+        print(f"I{n} = {value:.10f}")
+        print(f"diff = {diff:.10f}")
         if i + 1 != len(integrals_calculation_methods):
             print()
     return 0
