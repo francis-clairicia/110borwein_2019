@@ -37,7 +37,7 @@ def trapezoidal_method(n: int, min_=0, max_=5000):
     return sum(area(h, x1, x2) for x1, x2 in pairs)
 
 def simpson_method(n: int, min_=0, max_=5000):
-    number_of_sub_interval = 10000
+    number_of_sub_interval = 20000
     h = float(max_ - min_) / float(number_of_sub_interval)
     x = lambda i: float(min_) + (float(i) * h)
     even_sum = odd_sum = 0
